@@ -1,13 +1,16 @@
-from base_menu import BaseMenu
+from Menus.base_menu import BaseMenu
+from target import Target
 
 
 class BaseAction:
-    id = ''
-    display_name = ''
-    details = ''
 
     def __init__(self, menu: BaseMenu):
         self.menu = menu
+
+    # @classmethod
+    # def withTarget(cls, menu: BaseMenu, target: Target):
+    #     self.target = target
+    #     return cls(menu)
 
     def _ask_y_or_n(self, question):
         user_input = input(question)
@@ -18,8 +21,17 @@ class BaseAction:
         else:
             print("Invalid input. Please enter 'y' or 'n'.")
 
+    def get_menu_action_options(self):
+        return tuple(self.menu.current_action_options)
+
     def stop_calling_menu(self):
         self.menu.stop_menu()
 
     def execute(self, args):
         pass
+
+
+class BaseActionWithTarget:
+    def __init__(self, menu: BaseMenu, target: Target):
+        self.menu = menu
+        self.target = target

@@ -1,7 +1,7 @@
 import readline
-from Actions.Add.add_form_menu import AddFormMenu
-from Actions.base_action import BaseAction
 from urllib.parse import urlparse
+from Menus.add_form_menu import AddFormMenu
+from Actions.base_action import BaseAction
 from logger import Logger
 
 from target import Target
