@@ -8,7 +8,7 @@ from Actions.list_action import ListAction
 class MainMenu(BaseMenu):
     # action_options = {'Help': 'help', 'List targets': 'list', 'Add target': 'add', 'Delete targets': 'target',
     #                   'Edit targets': 'edit', 'Bruteforce targets': 'bruteforce', 'Export targets': 'export'}
-    # edit_options = {'Hostname': 'hostname', 'Protocol': 'protocol'}
+    # edit_options = {'url': 'url', 'Protocol': 'protocol'}
     def __init__(self):
         super().__init__()
         self.current_action_options += [

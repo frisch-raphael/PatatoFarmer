@@ -3,6 +3,7 @@ from target import Target
 
 
 class BaseAction:
+    usage = ""
 
     def __init__(self, menu: BaseMenu):
         self.menu = menu
@@ -26,6 +27,12 @@ class BaseAction:
 
     def stop_calling_menu(self):
         self.menu.stop_menu()
+
+    def _execute(self, args):
+        if args and args[0].lower() == 'help':
+            print(self.usage)
+            return
+        self.execute(args)
 
     def execute(self, args):
         pass

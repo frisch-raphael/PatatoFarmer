@@ -23,7 +23,7 @@ class AddAction(BaseAction):
 
     def __choose_http_bruteforce(self):
         readline.set_completer(self.__http_bruteforce_completer)
-        print("What kind of http bruteforce do you want ?")
+        print("What kind of http bruteforce do you want?")
         print("1. form (i.e the url points to a form with a login/password)")
         print("2. http basic")
         print("3. http ntlm")
@@ -41,18 +41,22 @@ class AddAction(BaseAction):
                 Logger.warn("Invalid input. Enter a number between 1 and 3.")
         return mode
 
+    def __get_default_port(self, scheme: str):
+        return 443 if scheme == 'https' else 80
+
     def execute(self, args):
         if len(args) != 1:
             print(self.usage)
             return
-        parsed_uri = urlparse(args[0])
+        url = args[0]
+        parsed_uri = urlparse(url)
         mode = parsed_uri.scheme
         if "http" in parsed_uri.scheme:
             mode = f"{parsed_uri.scheme}-{self.__choose_http_bruteforce()}"
+        # port = parsed_uri.port if parsed_uri.port else self.__get_default_port(
+        #     parsed_uri.scheme)
 
-        target = Target(hostname=parsed_uri.hostname,
-                        mode=mode,
-                        port=parsed_uri.port)
+        target = Target(url=url, mode=mode)
         if "form" in mode:
             add_form_menu = AddFormMenu(target)
             add_form_menu.prepare_and_launch_menu()
@@ -62,6 +66,6 @@ class AddAction(BaseAction):
         try:
             target.save_to_db()
             Logger.success(
-                f"Added {target.hostname} target to the database")
+                f"Added {target.url} target to the database")
         except Exception as e:
             Logger.warn("Could not save target to DB")

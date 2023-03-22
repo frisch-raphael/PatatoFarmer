@@ -6,15 +6,13 @@ c = conn.cursor()
 # Create the targets table if it doesn't exist
 c.execute('''CREATE TABLE IF NOT EXISTS targets
              (id INTEGER PRIMARY KEY, 
-             hostname text, 
+             url text, 
              mode text, 
-             port integer, 
-             wordlists text, 
+             pass_user_lists text, 
              additional_keywords text, 
              status text, 
              login_param text, 
-             password_param text,
-             path
+             password_param text
              )''')
 
 conn.commit()

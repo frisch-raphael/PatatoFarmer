@@ -13,25 +13,48 @@ class ListAction(BaseAction):
         if args:
             print(self.usage)
         else:
-            forms = Target.list_forms()
+            forms: list[Target] = Target.list_forms()
             table = PrettyTable()
             table.title = "http(s) form target(s)"
-            table.field_names = ["ID", "Hostname", "Mode", "Port", "Wordlists",
-                                 "Additional Keywords", "Status", "Login Param", "Password Param", "Path"]
+
+            table.field_names = ["ID", "url", "Mode", "Pass / User Lists",
+                                 "Additional Keywords", "Login Param",
+                                 "Password Param", "Status"]
+
             for target in forms:
-                table.add_row([target.id, target.hostname, target.mode, target.port, target.wordlists,
-                               target.additional_keywords, target.status, target.login_param,
-                               target.password_param, target.path])
-            print("\n")
+                target_dict = {
+                    'ID': target.id,
+                    'url': target.url,
+                    'Mode': target.mode,
+                    'Pass / User Lists': target.pass_user_lists,
+                    'Additional Keywords': target.additional_keywords,
+                    'Login Param': target.login_param,
+                    'Password Param': target.password_param,
+                    'Status': target.status
+                }
+                table.add_row([target_dict[field_name]
+                               for field_name in table.field_names])
+
+            print()
             print(table)
             print("\n")
-            standards = Target.list_standards()
+            standards: list[Target] = Target.list_standards()
             table = PrettyTable()
             table.title = "Standard targets"
-            table.field_names = ["ID", "Hostname", "Mode", "Port", "Wordlists",
+            table.field_names = ["ID", "url", "Mode", "Port", "User:pass List",
                                  "Additional Keywords", "Status"]
+
             for target in standards:
-                table.add_row([target.id, target.hostname, target.mode, target.port, target.wordlists,
-                              target.additional_keywords, target.status])
+                target_dict = {
+                    'ID': target.id,
+                    'url': target.url,
+                    'Mode': target.mode,
+                    'Port': target.port,
+                    'User:pass List': target.pass_user_lists,
+                    'Additional Keywords': target.additional_keywords,
+                    'Status': target.status
+                }
+                table.add_row([target_dict[field_name]
+                               for field_name in table.field_names])
             print(table)
             print("\n")

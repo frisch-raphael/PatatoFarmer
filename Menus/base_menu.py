@@ -26,11 +26,12 @@ class BaseMenu:
 
     def _execute_action(self, action_id, args):
         from Factories.action_factory import ActionFactory
+        from Actions.base_action import BaseAction
         action_cls = ActionFactory.create_action(action_id)
-        action = action_cls(self)
-        action.execute(args)
+        action: BaseAction = action_cls(self)
+        action._execute(args)
 
-    def __completer(self, text, state):
+    def _completer(self, text, state):
         """
         This function is used by the readline library to generate tab completions.
         """
@@ -42,22 +43,32 @@ class BaseMenu:
         except IndexError:
             return IndexError
 
-    def __prepare_tab_completion(self):
-        readline.set_completer(self.__completer)
+    def configure_tab_completion(self):
+        readline.set_completer(self._completer)
         readline.parse_and_bind('tab: complete')
 
     def launch_menu(self, prompt):
         while self.go_on:
-            chosen_option_id = input(prompt)
-            chosen_option_parts = chosen_option_id.split()
-            chosen_option_id = chosen_option_parts[0]
+            user_input = input(prompt)
+            user_input_parts = user_input.strip().split()
+            if len(user_input_parts) == 0:
+                Logger.warn("No action given")
+                from Actions.help_action import HelpAction
+                HelpAction(self).execute()
+                continue
+            chosen_option_id = user_input_parts[0]
             if chosen_option_id in self._get_ids():
-                chosen_args = chosen_option_parts[1:]
+                chosen_args = user_input_parts[1:]
                 self._execute_action(chosen_option_id, chosen_args)
-                readline.set_completer(self.__completer)
+                # try:
+                #     self._execute_action(chosen_option_id, chosen_args)
+                # except Exception as e:
+                #     Logger.warn(str(e))
+                # reset completer in case we modified it from another action
+                readline.set_completer(self._completer)
             else:
-                Logger().warn("Invalid action")
+                Logger().warn("Invalid action. Type \"Help\" for help.")
 
     def prepare_and_launch_menu(self, prompt):
-        self.__prepare_tab_completion()
+        self.configure_tab_completion()
         self.launch_menu(prompt)

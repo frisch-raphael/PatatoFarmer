@@ -2,11 +2,12 @@ from Menus.main_menu import MainMenu
 
 
 class Bruteforcer:
-    hostname = ""
+    url = ""
 
 
 class HttpBruteforcer:
-    hostname = ""
+    url = ""
+
 
 
 menu = MainMenu()
