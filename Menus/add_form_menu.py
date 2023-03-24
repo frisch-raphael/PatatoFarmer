@@ -1,12 +1,12 @@
 import readline
-from Actions.Add.back_action import BackAction
+from Actions.AddTarget.back_action import BackAction
 from Menus.base_menu import BaseMenu
-from target import Target
+from Dtos.target_dto import TargetDto
 
 
 class AddFormMenu(BaseMenu):
 
-    def __init__(self, target: Target):
+    def __init__(self, target_dto: TargetDto):
         super().__init__()
         self.current_action_options += [
             {
@@ -30,7 +30,7 @@ class AddFormMenu(BaseMenu):
                 "hint": "Save target to database."
             }
         ]
-        self.target = target
+        self.target_dto = target_dto
 
     def _completer(self, text, state):
         """
@@ -39,7 +39,7 @@ class AddFormMenu(BaseMenu):
         buffer = readline.get_line_buffer()
         if buffer.startswith("set"):
             target_properties = [
-                'login_param', 'password_param', 'status', 'additional_keywords'
+                'login_param', 'password_param', 'status', 'additional_keywords', 'pass_user_lists', 'url'
             ]
             matches = [
                 prop for prop in target_properties if prop.startswith(text.lower())]
@@ -58,7 +58,7 @@ class AddFormMenu(BaseMenu):
         if action_id == 'back' or action_id == 'help':
             action = action_cls(self)
         else:
-            action = action_cls(self, self.target)
+            action = action_cls(self, self.target_dto)
         action.execute(args)
 
     def prepare_and_launch_menu(self):

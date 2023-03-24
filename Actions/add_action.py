@@ -1,10 +1,12 @@
 import readline
 from urllib.parse import urlparse
+from Dtos.target_dto import TargetDto
 from Menus.add_form_menu import AddFormMenu
 from Actions.base_action import BaseAction
-from logger import Logger
+from Classes.logger import Logger
+from pony.orm import db_session
 
-from target import Target
+from Model.target import Target
 
 
 class AddAction(BaseAction):
@@ -16,7 +18,8 @@ class AddAction(BaseAction):
     add http://www.ethicalhackers
     add ftp://10.0.0.1"""
 
-    # def __init():
+    def __init__(self, menu):
+        super().__init__(menu)
 
     def __http_bruteforce_completer(self, _, state):
         return ['1', '2', '3'][state]
@@ -44,6 +47,7 @@ class AddAction(BaseAction):
     def __get_default_port(self, scheme: str):
         return 443 if scheme == 'https' else 80
 
+    @db_session
     def execute(self, args):
         if len(args) != 1:
             print(self.usage)
@@ -56,16 +60,16 @@ class AddAction(BaseAction):
         # port = parsed_uri.port if parsed_uri.port else self.__get_default_port(
         #     parsed_uri.scheme)
 
-        target = Target(url=url, mode=mode)
+        target_dto = TargetDto(url=url, mode=mode)
         if "form" in mode:
-            add_form_menu = AddFormMenu(target)
+            add_form_menu = AddFormMenu(target_dto)
             add_form_menu.prepare_and_launch_menu()
             if add_form_menu.has_user_backed:
                 return
+        Target.from_dto(target_dto)
 
         try:
-            target.save_to_db()
             Logger.success(
-                f"Added {target.url} target to the database")
+                f"Added {target_dto.url} target to the database")
         except Exception as e:
-            Logger.warn("Could not save target to DB")
+            Logger.warn(f"Could not save target to DB: {str(e)}")

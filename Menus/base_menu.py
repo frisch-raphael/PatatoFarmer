@@ -1,15 +1,24 @@
 import readline
-from logger import Logger
+from Classes.logger import Logger
 
 
 class BaseMenu:
 
     def __init__(self):
-        self.current_action_options = [{
+        self.current_action_options = [
+        {
             "id": "help",
             "display_name": "Help",
-            "hint": "Print this message"
-        }]
+            "hint": "Print this message",
+            "submenu": "Miscellaneous"
+        },
+        {
+            "id": "exit",
+            "display_name": "Exit",
+            "hint": "Exit PatatoFarmer",
+            "submenu": "Miscellaneous"
+        },
+        ]
         self.go_on = True
         self.has_user_backed = False
         self.actions_by_id = {
@@ -29,7 +38,7 @@ class BaseMenu:
         from Actions.base_action import BaseAction
         action_cls = ActionFactory.create_action(action_id)
         action: BaseAction = action_cls(self)
-        action._execute(args)
+        action.execute(args)
 
     def _completer(self, text, state):
         """
@@ -61,7 +70,7 @@ class BaseMenu:
                 chosen_args = user_input_parts[1:]
                 self._execute_action(chosen_option_id, chosen_args)
                 # try:
-                #     self._execute_action(chosen_option_id, chosen_args)
+                # self._execute_action(chosen_option_id, chosen_args)
                 # except Exception as e:
                 #     Logger.warn(str(e))
                 # reset completer in case we modified it from another action

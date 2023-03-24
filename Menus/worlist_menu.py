@@ -1,7 +1,7 @@
 import readline
-from Actions.Add.back_action import BackAction
+from Actions.AddTarget.back_action import BackAction
 from Menus.base_menu import BaseMenu
-from target import Target
+from Model.target import Target
 
 
 class AddFormMenu(BaseMenu):

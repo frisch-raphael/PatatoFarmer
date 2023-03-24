@@ -1,5 +1,5 @@
 from Actions.base_action import BaseAction
-from target import Target
+from Model.target import Target
 from prettytable import PrettyTable
 
 
@@ -13,4 +13,3 @@ class WordlistAction(BaseAction):
         if args:
             print(self.usage)
             return
-        

@@ -1,19 +1,24 @@
 from Actions.base_action import BaseAction
-from target import Target
+from Model.target import Target
 from prettytable import PrettyTable
+from pony.orm import db_session
 
 
 class ListAction(BaseAction):
-    usage = """    List all targets in the database
+    usage = """List all targets in the database
     
-    USAGE:
-    list"""
+USAGE:
+list"""
 
+    def __init__(self, menu):
+        super().__init__(menu)
+
+    @db_session
     def execute(self, args):
         if args:
             print(self.usage)
         else:
-            forms: list[Target] = Target.list_forms()
+            forms = Target.list_forms()
             table = PrettyTable()
             table.title = "http(s) form target(s)"
 
@@ -38,7 +43,7 @@ class ListAction(BaseAction):
             print()
             print(table)
             print("\n")
-            standards: list[Target] = Target.list_standards()
+            standards = Target.list_standards()
             table = PrettyTable()
             table.title = "Standard targets"
             table.field_names = ["ID", "url", "Mode", "Port", "User:pass List",

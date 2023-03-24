@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import urllib3
-from logger import Logger
+from Classes.logger import Logger
 
 
 class ParamFetcher:

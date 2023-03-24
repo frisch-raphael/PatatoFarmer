@@ -3,7 +3,7 @@
 __pycache__/
 
 # Ignore database file
-targets.db
+patato_farmer.db
 
 # Ignore build artifacts
 dist/

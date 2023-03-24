@@ -15,29 +15,57 @@ class MainMenu(BaseMenu):
             {
                 "id": "list",
                 "display_name": "List targets",
-                "hint": "List all targets in the database"
+                "hint": "List all targets in the database",
+                "submenu": "Target"
             },
             {
                 "id": "add",
                 "display_name": "Add target",
-                "hint": "Add a new target to the database"
+                "hint": "Add a new target to the database",
+                "submenu": "Target"
             },
             {
                 "id": "delete",
                 "display_name": "Delete targets",
-                "hint": "Delete target(s) from the database"
+                "hint": "Delete target(s) from the database",
+                "submenu": "Target"
             },
             {
                 "id": "import",
                 "display_name": "Import targets",
-                "hint": "Import target from a nmap scan"
+                "hint": "Import target from a nmap scan",
+                "submenu": "Target"
             },
             {
                 "id": "export",
                 "display_name": "Export targets",
-                "hint": "Export targets to an XML file"
+                "hint": "Export targets to an XML file",
+                "submenu": "Target"
             },
-
+            {
+                "id": "add_wordlist",
+                "display_name": "Add wordlists",
+                "hint": "Add a new wordlist to the database",
+                "submenu": "Wordlist"
+            },
+            {
+                "id": "reload_wordlists",
+                "display_name": "Reloads wordlists from subdirectories",
+                "hint": "Reloads wordlists from subdirectories. Use this command if you modified wordlists directly from ./Wordlists",
+                "submenu": "Wordlist"
+            },
+            {
+                "id": "list_wordlists",
+                "display_name": "List wordlists",
+                "hint": "List all wordlists in the database",
+                "submenu": "Wordlist"
+            },
+            {
+                "id": "delete_wordlist",
+                "display_name": "Delete wordlists",
+                "hint": "Delete wordlist(s) from the database",
+                "submenu": "Wordlist"
+            }
         ]
 
     def prepare_and_launch_menu(self):
