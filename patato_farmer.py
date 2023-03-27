@@ -1,11 +1,11 @@
-from Model.base import db
+from src.models.base import db
 import appsettings
 from pony.orm import sql_debug
-from Menus.main_menu import MainMenu
-from Classes.wordlist_file_manager import WordlistFileManager
+from src.menus.main_menu import MainMenu
+from src.utils.file_operators.wordlist_file_manager import WordlistFileManager
+
 
 class PatatoFarmer:
-
 
     # sql_debug(True)
     db.bind(**appsettings.db_params)
