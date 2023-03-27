@@ -5,21 +5,38 @@ from .logger import Logger
 
 
 class EntityDeleter:
+
     @staticmethod
-    def generate_delete_usage_string(entity_name: str) -> str:
-        usage = f"""Delete {entity_name}s from the database
+    def generate_delete_usage_string(ressource_name) -> str:
+        cmd = ""
+        if ressource_name == "target":
+            cmd = "delete"
+        else:
+            cmd = f"{ressource_name}_delete"
+        usage = f"""Delete {ressource_name}s from the database
 
-        {entity_name.lower()} delete USAGE:
-        {entity_name.lower()} delete <{entity_name.lower()}_id_1> [<{entity_name.lower()}_id_2> ... <{entity_name.lower()}_id_n>]
-        {entity_name.lower()} delete <start_id-end_id>
+{cmd} USAGE:
+{cmd} <{cmd}_id_1> [<{cmd}_id_2> ... <{cmd}_id_n>]
+{cmd} <start_id-end_id>
+{cmd} all
 
-        EXAMPLES:
-        {entity_name.lower()} delete 1
-        {entity_name.lower()} delete 1 3 4
-        {entity_name.lower()} delete 10-20
-        {entity_name.lower()} delete 1 4 5 10-20"""
-
+EXAMPLES:
+{cmd} 1
+{cmd} 1 3 4
+{cmd} 10-20
+{cmd} 1 4 5 10-20
+{cmd} all
+"""
         return usage
+
+    @staticmethod
+    @db_session
+    def delete_all(entity_cls):
+        entities = entity_cls.select()[:]
+        for entity in entities:
+            entity.delete()
+            Logger.success(
+                f"{entity_cls.__name__} with ID {entity.id} deleted successfully")
 
     @staticmethod
     @db_session

@@ -1,8 +1,10 @@
 from Actions.base_action import BaseAction
+from Enums.supported_number_of_args import ArgCountOptions
 
 
 class BackAction(BaseAction):
-    usage = """    Back"""
+    usage = """Back"""
+    arg_count_options = [ArgCountOptions.NONE]
 
     def execute(self, args=[]):
         self.stop_calling_menu()

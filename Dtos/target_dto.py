@@ -2,7 +2,8 @@ from typing import Optional
 
 
 class TargetDto:
-    def __init__(self, url: Optional[str] = None,
+    def __init__(self,
+                 url: Optional[str] = None,
                  mode: Optional[str] = None,
                  status: str = "todo",
                  additional_keywords: Optional[list[str]] = None,

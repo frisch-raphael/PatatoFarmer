@@ -1,0 +1,6 @@
+{
+  "default_wordlists": [
+    "simple_password",
+    "technical_users"
+  ]
+}

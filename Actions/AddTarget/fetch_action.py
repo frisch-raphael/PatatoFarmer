@@ -3,9 +3,12 @@ from Actions.base_action import BaseActionWithTarget
 from Classes.param_fetcher import ParamFetcher
 from termcolor import colored
 
+from Enums.supported_number_of_args import ArgCountOptions
+
 
 class FetchAction(BaseActionWithTarget):
-    usage = """    fetch_parameters"""
+    usage = """fetch_parameters"""
+    arg_count_options = [ArgCountOptions.NONE]
 
     def present_params(self, all_params, sub_params, type):
         print(f"Choose the {type} from the following parameters list:")
@@ -32,7 +35,7 @@ class FetchAction(BaseActionWithTarget):
         else:
             return list(all_params)[param_index - 1]
 
-    def execute(self, args):
+    def _execute(self, args):
         # create an instance of ParamFetcher class with target url as argument
         try:
             login_params, password_params, all_params = ParamFetcher(

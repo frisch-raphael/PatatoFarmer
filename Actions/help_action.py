@@ -2,8 +2,12 @@ from Actions.base_action import BaseAction
 from Classes.helper import clear_console
 from termcolor import colored
 
+from Enums.supported_number_of_args import ArgCountOptions
+
 
 class HelpAction(BaseAction):
+    arg_count_options = [ArgCountOptions.NONE]
+    usage = """help"""
 
     def execute(self, args=[]):
 
@@ -21,7 +25,7 @@ class HelpAction(BaseAction):
                 if submenu not in grouped_options:
                     grouped_options[submenu] = []
                 grouped_options[submenu].append(option)
-        print("\n\n")
+        print()
         print("Actions are tab completable.")
         print("type \"action_name help\" for help.")
         print()

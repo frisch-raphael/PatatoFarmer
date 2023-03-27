@@ -1,15 +1,9 @@
-from pydantic import ColorError
 from Actions.base_action import BaseActionWithTarget
+from Classes.arg_checker import ArgChecker
 from Classes.logger import Logger
-from enum import Enum, auto
 import textwrap
 from termcolor import colored
-
-
-class NumberOfParamsOptions(Enum):
-    NONE = auto()  # the set parameter action accepts no argument
-    UNIQUE = auto()  # the set parameter action accepts one argument
-    MULTIPLE = auto()  # the set parameter action accepts one ore more argument(s)
+from Enums.supported_number_of_args import ArgCountOptions
 
 
 class ParamUsageNotFoundError(Exception):
@@ -29,7 +23,7 @@ class SetActionUsage():
 
     def __init__(self,
                  name: str,
-                 number_of_params: list[NumberOfParamsOptions],
+                 number_of_params: list[ArgCountOptions],
                  additional_usage_help: str = "",
                  examples: list = [],
                  supported_values: list = [],
@@ -71,18 +65,18 @@ class SetActionUsage():
 
     def display_usage(self, parameter):
         print(colored(f"set {parameter} USAGE:", attrs=['bold']))
-        if NumberOfParamsOptions.MULTIPLE in self.number_of_params:
+        if ArgCountOptions.MULTIPLE in self.number_of_params:
             value1 = f"<{self.__remove_s(parameter)}_1>"
             valuen = f"<{self.__remove_s(parameter)}_n>"
             print(
                 f"set {parameter} [{value1} ... {valuen}]")
 
-        if NumberOfParamsOptions.UNIQUE in self.number_of_params:
+        if ArgCountOptions.UNIQUE in self.number_of_params:
             usage_value = "|".join(
                 self.supported_values) if self.supported_values else f"{parameter}_value"
             print(f"set {parameter} <{usage_value}>")
 
-        if NumberOfParamsOptions.NONE in self.number_of_params:
+        if ArgCountOptions.NONE in self.number_of_params:
             print(f"set {parameter}")
         print()
 
@@ -103,17 +97,21 @@ class SetActionUsage():
 
 
 class SetAction(BaseActionWithTarget):
-
+    # this is for set, not for set xxxx
+    arg_count_options = [ArgCountOptions.MULTIPLE, ArgCountOptions.UNIQUE]
     usage = SetActionUsage.base_usage
+
+    def __init__(self, menu, target_dto):
+        super().__init__(menu, target_dto)
 
     params_usage = [
         SetActionUsage(
             'url',
-            [NumberOfParamsOptions.UNIQUE],
+            [ArgCountOptions.UNIQUE],
             examples=["set url http://www.ethicalhackers.fr"]),
         SetActionUsage(
             'mode',
-            [NumberOfParamsOptions.UNIQUE],
+            [ArgCountOptions.UNIQUE],
             textwrap.dedent("""
                 Mode configure how you want to bruteforce the URL. For now, only standard http(s) form are supported."""),
             supported_values=["http-form", "https-form"],
@@ -121,7 +119,7 @@ class SetAction(BaseActionWithTarget):
         ),
         SetActionUsage(
             'pass_user_lists',
-            [NumberOfParamsOptions.MULTIPLE, NumberOfParamsOptions.NONE],
+            [ArgCountOptions.MULTIPLE, ArgCountOptions.NONE],
             textwrap.dedent("""
                 pass_user_lists is a path to a colon separated (user:password) list to bruteforce the target with. 
                 One user:password per line.
@@ -130,7 +128,7 @@ class SetAction(BaseActionWithTarget):
         ),
         SetActionUsage(
             'additional_keywords',
-            [NumberOfParamsOptions.MULTIPLE],
+            [ArgCountOptions.MULTIPLE],
             textwrap.dedent(
                 """                additional_keywords sets additional keywords that will be used during the bruteforce.
                 i.e, if you set "ethicalhackers" as an additional keywords, it will be used as a username and a password during bruteforces.
@@ -141,20 +139,20 @@ class SetAction(BaseActionWithTarget):
         ),
         SetActionUsage(
             'status',
-            [NumberOfParamsOptions.UNIQUE],
+            [ArgCountOptions.UNIQUE],
             textwrap.dedent(
                 """Status specifies whether the bruteforce was already done or not."""),
             supported_values=["todo", "error", "done"]
         ),
         SetActionUsage(
             'login_param',
-            [NumberOfParamsOptions.UNIQUE],
+            [ArgCountOptions.UNIQUE],
             textwrap.dedent(
                 """login_param is the parameter name used in the POST data that will hold the value for usernames."""),
             examples=["set login_param username"]),
         SetActionUsage(
             'password_param',
-            [NumberOfParamsOptions.UNIQUE],
+            [ArgCountOptions.UNIQUE],
             textwrap.dedent(
                 """password_param is the parameter name used in the POST data that will hold the value for passwords."""),
             examples=["set password_param passwd"])
@@ -168,57 +166,50 @@ class SetAction(BaseActionWithTarget):
                 f"Parameter '{name}' not found in params_usage list.")
         return param
 
+    def __is_param_name_valid(self, param_name):
+        return hasattr(self.target_dto, param_name)
+
+    def __display_invalid_param_error(self, param_name):
+        SetActionUsage.invalid_param(param_name)
+
+    def __get_param_usage_and_checker(self, command_parts):
+        param_name = command_parts[0]
+        param_usage = self.__get_param_usage_by_name(param_name)
+        arguments = command_parts[1:]
+        arg_checker = ArgChecker(
+            arguments, param_usage.number_of_params, param_usage.supported_values)
+        return param_usage, arg_checker
+
     def __test_usage_correctness_and_display_help(self, command_parts: list[str]):
-        # Check that the user inputed an parameter and not just "set"
         if len(command_parts) == 0:
             SetActionUsage.no_param()
             return False
 
-        # start checking cases where the user did input a parameter to set
-        if len(command_parts) >= 1:
-            arguments = command_parts[1:]
-            param_name = command_parts[0]
-            param_usage = self.__get_param_usage_by_name(param_name)
+        param_name = command_parts[0]
 
-            # Check if the user asked for help
-            if arguments and arguments[0].lower() == 'help':
-                param_usage.display_full_help(param_name)
-                return False
+        # set help
+        if param_name.lower() == 'help':
+            SetActionUsage.display_base_help()
+            return False
 
-            # Check that the inputed parameter is supported
-            if not hasattr(self.target_dto, param_name):
-                SetActionUsage.invalid_param(param_name)
-                return False
+        param_usage, arg_checker = self.__get_param_usage_and_checker(
+            command_parts)
 
-            # check that the supported parameter is not used with more than one argument if it does not support multiple arguments
-            if len(arguments) > 1 and not NumberOfParamsOptions.MULTIPLE in param_usage.number_of_params:
-                Logger.warn(
-                    f"Too many arguments given. {param_usage.str_proposing_help()}")
-                param_usage.display_usage(param_usage.name)
-                return False
+        # set param help
+        if arg_checker.check_help_requested():
+            param_usage.display_full_help(param_name)
+            return False
 
-            # check that the supported parameter is called with arguments if it needs it
-            if not arguments and not NumberOfParamsOptions.NONE in param_usage.number_of_params:
-                Logger.warn(
-                    f"No argument given. {param_usage.str_proposing_help()}")
-                param_usage.display_usage(param_usage.name)
-                return False
+        if not self.__is_param_name_valid(param_name):
+            self.__display_invalid_param_error(param_name)
+            return False
 
-            # Check that if one argument is given, it is indeed supported by param_usage
-            one_argument_given = len(arguments) == 1
-            supported_options = (NumberOfParamsOptions.UNIQUE,
-                                 NumberOfParamsOptions.MULTIPLE)
-            if one_argument_given and not any(option in param_usage.number_of_params for option in supported_options):
-                Logger.warn(
-                    f"Unsupported number of arguments given. {param_usage.str_proposing_help()}")
-                param_usage.display_usage(param_usage.name)
-                return False
+        result, error_message = arg_checker.check_all()
+        if not result:
+            Logger.warn(f"{error_message} {param_usage.str_proposing_help()}")
+            param_usage.display_usage(param_usage.name)
+            return False
 
-            if param_usage.supported_values and arguments[0] not in param_usage.supported_values:
-                Logger.warn(
-                    f"Supported values are: {', '.join(param_usage.supported_values)}.")
-                # param_usage.display_usage(param_usage.name)
-                return False
         return True
 
     def execute(self, command_parts):

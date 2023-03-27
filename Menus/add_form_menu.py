@@ -46,7 +46,6 @@ class AddFormMenu(BaseMenu):
         else:
             ids = self._get_ids()
             matches = [id for id in ids if id.startswith(text.lower())]
-
         try:
             return matches[state]
         except IndexError:
@@ -64,4 +63,4 @@ class AddFormMenu(BaseMenu):
     def prepare_and_launch_menu(self):
         readline.set_completer(self._completer)
         readline.parse_and_bind('tab: complete')
-        super().launch_menu("add http target>")
+        super().launch_menu("patatofarmer[http][target]>")

@@ -1,3 +1,6 @@
+Wordlists/
+Wordlists_bu/
+
 # Ignore Python cache files
 *.pyc
 __pycache__/

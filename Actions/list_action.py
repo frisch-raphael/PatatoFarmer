@@ -1,10 +1,13 @@
 from Actions.base_action import BaseAction
+from Classes.table_printer import TablePrinter, TargetInfoMixin
+from Enums.supported_number_of_args import ArgCountOptions
 from Model.target import Target
-from prettytable import PrettyTable
+from prettytable import ALL, DOUBLE_BORDER, ORGMODE, SINGLE_BORDER, PrettyTable
 from pony.orm import db_session
 
 
-class ListAction(BaseAction):
+class ListAction(BaseAction, TargetInfoMixin):
+    arg_count_options = [ArgCountOptions.NONE]
     usage = """List all targets in the database
     
 USAGE:
@@ -14,52 +17,22 @@ list"""
         super().__init__(menu)
 
     @db_session
-    def execute(self, args):
+    def _execute(self, args):
         if args:
             print(self.usage)
-        else:
-            forms = Target.list_forms()
-            table = PrettyTable()
-            table.title = "http(s) form target(s)"
+            return
 
-            table.field_names = ["ID", "url", "Mode", "Pass / User Lists",
-                                 "Additional Keywords", "Login Param",
-                                 "Password Param", "Status"]
+        # For forms
+        forms = Target.list_forms()
+        title = "http(s) form target(s)"
 
-            for target in forms:
-                target_dict = {
-                    'ID': target.id,
-                    'url': target.url,
-                    'Mode': target.mode,
-                    'Pass / User Lists': target.pass_user_lists,
-                    'Additional Keywords': target.additional_keywords,
-                    'Login Param': target.login_param,
-                    'Password Param': target.password_param,
-                    'Status': target.status
-                }
-                table.add_row([target_dict[field_name]
-                               for field_name in table.field_names])
+        if forms:
+            TablePrinter.print_target_table(forms, title, self.forms_fields)
 
-            print()
-            print(table)
-            print("\n")
-            standards = Target.list_standards()
-            table = PrettyTable()
-            table.title = "Standard targets"
-            table.field_names = ["ID", "url", "Mode", "Port", "User:pass List",
-                                 "Additional Keywords", "Status"]
+        # For standards
+        standards = Target.list_standards()
+        title = "Standard targets"
+        standards_fields = self.standard_fields
 
-            for target in standards:
-                target_dict = {
-                    'ID': target.id,
-                    'url': target.url,
-                    'Mode': target.mode,
-                    'Port': target.port,
-                    'User:pass List': target.pass_user_lists,
-                    'Additional Keywords': target.additional_keywords,
-                    'Status': target.status
-                }
-                table.add_row([target_dict[field_name]
-                               for field_name in table.field_names])
-            print(table)
-            print("\n")
+        if standards:
+            TablePrinter.print_target_table(standards, title, standards_fields)

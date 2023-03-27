@@ -6,18 +6,18 @@ class BaseMenu:
 
     def __init__(self):
         self.current_action_options = [
-        {
-            "id": "help",
-            "display_name": "Help",
-            "hint": "Print this message",
-            "submenu": "Miscellaneous"
-        },
-        {
-            "id": "exit",
-            "display_name": "Exit",
-            "hint": "Exit PatatoFarmer",
-            "submenu": "Miscellaneous"
-        },
+            {
+                "id": "help",
+                "display_name": "Help",
+                "hint": "Print this message",
+                "submenu": "Miscellaneous"
+            },
+            {
+                "id": "exit",
+                "display_name": "Exit",
+                "hint": "Exit PatatoFarmer",
+                "submenu": "Miscellaneous"
+            },
         ]
         self.go_on = True
         self.has_user_backed = False
@@ -53,6 +53,7 @@ class BaseMenu:
             return IndexError
 
     def configure_tab_completion(self):
+        readline.set_completer_delims(' \t\n')
         readline.set_completer(self._completer)
         readline.parse_and_bind('tab: complete')
 

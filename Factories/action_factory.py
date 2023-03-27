@@ -3,9 +3,11 @@ from Actions.AddTarget.fetch_action import FetchAction
 from Actions.AddTarget.save_action import SaveAction
 from Actions.AddTarget.set_action import SetAction
 from Actions.AddTarget.show_action import ShowAction
-from Actions.Wordlist.delete_wordlist_action import DeleteWordlistAction
-from Actions.Wordlist.list_wordlist_action import ListWordlistActions
+from Actions.Wordlist.wordlist_set_default_action import WordlistSetDefaultAction
+from Actions.Wordlist.wordlist_delete_action import WordlistDeleteAction
+from Actions.Wordlist.wordlist_list_action import WordlistListAction
 from Actions.exit_action import ExitAction
+from Actions.import_nmap_action import ImportNmapAction
 from Actions.list_action import ListAction
 from Actions.add_action import AddAction
 from Actions.help_action import HelpAction
@@ -28,9 +30,11 @@ class ActionFactory:
             "set": SetAction,
             "show": ShowAction,
             "save": SaveAction,
-            "list_wordlists": ListWordlistActions,
-            "delete_wordlists": DeleteWordlistAction
-            # "fetch_parameters": FetchAction,
+            "import_nmap": ImportNmapAction,
+            "wordlist_list": WordlistListAction,
+            "wordlist_delete": WordlistDeleteAction,
+            "wordlist_set_default": WordlistSetDefaultAction,
+            "fetch_parameters": FetchAction,
             # "fetch_parameters": FetchAction
         }
 

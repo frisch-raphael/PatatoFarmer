@@ -1,9 +1,13 @@
+from Classes.logger import Logger
+from Classes.arg_checker import ArgChecker
 from Menus.base_menu import BaseMenu
 from Dtos.target_dto import TargetDto
 
 
 class BaseAction:
     usage = "No usage for this action implemented yet."
+    arg_count_options = []
+    supported_values = []
 
     def __init__(self, menu: BaseMenu):
         self.menu = menu
@@ -23,14 +27,21 @@ class BaseAction:
     def stop_calling_menu(self):
         self.menu.stop_menu()
 
-    def execute(self, args):
+    def _execute(self, args):
         pass
 
     def execute(self, args):
-        if args and args[0].lower() == 'help':
+        arg_checker = ArgChecker(
+            args, self.arg_count_options, self.supported_values)
+        if arg_checker.check_help_requested():
             print(self.usage)
             return
-        self.execute(args)
+        result, error_message = arg_checker.check_all()
+        if not result:
+            Logger.warn(f"{error_message}")
+            print(self.usage)
+            return
+        self._execute(args)
 
 
 class BaseActionWithTarget(BaseAction):
