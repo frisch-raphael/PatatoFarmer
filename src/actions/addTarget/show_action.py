@@ -1,7 +1,7 @@
 from prettytable import PrettyTable
 from actions.base_action import BaseActionWithTarget
 from classes.table_printer import TablePrinter
-from enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 from models.target import Target
 
 

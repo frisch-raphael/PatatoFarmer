@@ -1,6 +1,6 @@
 from src.actions.base_action import BaseAction
 from src.utils.table_printer import TablePrinter, TargetInfoMixin
-from src.enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 from src.models.target import Target
 from prettytable import ALL, DOUBLE_BORDER, ORGMODE, SINGLE_BORDER, PrettyTable
 from pony.orm import db_session

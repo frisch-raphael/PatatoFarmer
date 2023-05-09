@@ -7,8 +7,8 @@ from pony.orm import db_session
 
 class WordlistSelector:
     def __init__(self):
-        self.userlists = Wordlist.list_userlists()
-        self.passlists = Wordlist.list_passlists()
+        self.userlists = Wordlist.get_userlists()
+        self.passlists = Wordlist.get_passlists()
         self.userpasslists = Wordlist.list_userpasslists()
         self.default_wordlists = ConfigManager.get_default_wordlists()
 

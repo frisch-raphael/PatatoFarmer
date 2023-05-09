@@ -1,6 +1,6 @@
 from src.actions.base_action import BaseAction
 from src.utils.table_printer import TablePrinter
-from src.enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 from pony.orm import db_session
 
 

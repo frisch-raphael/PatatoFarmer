@@ -3,7 +3,7 @@ from src.utils.arg_checker import ArgChecker
 from src.utils.logger import Logger
 import textwrap
 from termcolor import colored
-from src.enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 
 
 class ParamUsageNotFoundError(Exception):

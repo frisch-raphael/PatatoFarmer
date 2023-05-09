@@ -3,7 +3,7 @@ from src.actions.base_action import BaseAction
 from src.utils.config.config_manager import ConfigManager
 from src.utils.wordlist_selector import WordlistSelector
 
-from src.enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 
 
 class WordlistSetDefaultAction(BaseAction):

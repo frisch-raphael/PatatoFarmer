@@ -3,7 +3,7 @@ from src.actions.base_action import BaseActionWithTarget
 from src.utils.param_fetcher import ParamFetcher
 from termcolor import colored
 
-from src.enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 
 
 class FetchAction(BaseActionWithTarget):

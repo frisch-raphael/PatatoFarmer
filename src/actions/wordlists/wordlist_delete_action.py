@@ -2,7 +2,7 @@ from typing import List
 from src.actions.base_action import BaseAction
 from src.utils.entity_deleter import EntityDeleter
 from pony.orm import db_session
-from src.enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 
 from src.models import Wordlist
 

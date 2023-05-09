@@ -2,7 +2,7 @@ import readline
 from urllib.parse import urlparse
 from src.utils.config.config_manager import ConfigManager
 from src.dtos.target_dto import TargetDto
-from src.enums.supported_number_of_args import ArgCountOptions
+from src.enums.acg_count_options import ArgCountOptions
 from src.menus.add_form_menu import AddFormMenu
 from src.actions.base_action import BaseAction
 from src.utils.logger import Logger
@@ -33,10 +33,11 @@ add ftp://10.0.0.1"""
         print("What kind of http bruteforce do you want?")
         print("1. form (i.e the url points to a form with a login/password)")
         print("2. http basic")
-        print("3. http ntlm")
+        print("3. http digest")
+        print("4. http ntlm")
         choice = ''
         mode = ""
-        while not (choice.isdigit() and '1' <= choice <= '3'):
+        while not (choice.isdigit() and '1' <= choice <= '4'):
             choice = input("patatoformer[http][type]>")
             if choice == "1":
                 mode = "form"
@@ -44,12 +45,11 @@ add ftp://10.0.0.1"""
                 mode = "basic"
             elif choice == "3":
                 mode = "ntlm"
+            elif choice == "4":
+                mode = "ntlm"
             else:
-                Logger.warn("Invalid input. Enter a number between 1 and 3.")
+                Logger.warn("Invalid input. Enter a number between 1 and 4.")
         return mode
-
-    def __get_default_port(self, scheme: str):
-        return 443 if scheme == 'https' else 80
 
     @db_session
     def _execute(self, args):

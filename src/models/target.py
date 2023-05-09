@@ -29,6 +29,10 @@ class Target(db.Entity):
     @property
     def port(self):
         return urlparse(self.url).port
+    
+    @property
+    def port(self):
+        return urlparse(self.url).port
 
     @staticmethod
     def list_forms() -> list['Target']:

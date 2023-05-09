@@ -5,12 +5,12 @@ from pony.orm import db_session
 from src.utils.file_operators.file_operator import FileOperator
 from src.models.target import Target
 from src.utils.config.config_manager import ConfigManager
+from src.utils.protocols import protocols_with_authentication
 
 
 class NmapFileImporter:
 
-    protocols = ['ftp', 'ssh', 'ftps', 'sftp', 'smtp', 'rdp',
-                 'pop', 'imap', 'smb', 'mysql', 'mssql', 'snmp', 'ldap']
+    protocols = protocols_with_authentication
 
     def __init__(self, file_path_with_joker):
         self.file_path_with_joker = file_path_with_joker

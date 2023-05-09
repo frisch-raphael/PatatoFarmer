@@ -36,15 +36,22 @@ class Wordlist(db.Entity):
 
     @staticmethod
     @db_session
-    def list_passlists() -> list['Wordlist']:
+    def get_passlists() -> list['Wordlist']:
         return Wordlist.select(lambda w: w.type == "passlist")[:]
 
     @staticmethod
     @db_session
-    def list_userlists() -> list['Wordlist']:
+    def get_userlists() -> list['Wordlist']:
         return Wordlist.select(lambda w: w.type == "userlist")[:]
 
     @staticmethod
     @db_session
-    def list_userpasslists() -> list['Wordlist']:
+    def get_userpasslists() -> list['Wordlist']:
         return Wordlist.select(lambda w: w.type == "userpasslist")[:]
+
+    @classmethod
+    @db_session
+    def get_wordlists(cls):
+        return [cls.get_userlists(),
+                cls.get_passlists(),
+                cls.get_userpasslists()]
